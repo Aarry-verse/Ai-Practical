@@ -1,0 +1,1382 @@
+Practical 1: Simple Reflex Agent – Vacuum Cleaner
+Aim: Design and implement a simple reflex agent for the Vacuum Cleaner world.
+Python Code:
+def vacuum(location, status):
+    if status == "Dirty":
+        return "Suck"
+    elif location == "A":
+        return "Move Right"
+    else:
+        return "Move Left"
+
+print(vacuum("A", "Dirty"))
+print(vacuum("B", "Clean"))
+Output:
+Suck
+Move Left
+Simple explanation:
+1.	vacuum() is a function that takes location and room status.
+2.	If the room is dirty, the vacuum cleans it.
+3.	If the room is clean and at A, it moves right.
+4.	Otherwise, it moves left.
+5.	The program prints the selected action.
+Viva questions:
+Question	Answer
+What is an AI agent?	An agent that observes and acts.
+What is a reflex agent?	An agent that acts on current conditions.
+What is Suck?	The cleaning action.
+What is the environment?	Two rooms, A and B.
+Practical 2 – Model-Based Intelligent Agent
+Aim: Implement a model-based intelligent agent capable of navigating a grid environment with obstacles using internal state representation.
+Short Python Code
+class Agent:
+    def __init__(self):
+        self.visited = []
+
+    def move(self, x, y, obstacles):
+        self.visited.append((x, y))
+
+        if (x+1, y) not in obstacles and (x+1, y) not in self.visited:
+            return x+1, y
+        elif (x, y+1) not in obstacles and (x, y+1) not in self.visited:
+            return x, y+1
+        else:
+            return x, y
+agent = Agent()
+obstacles = [(1, 0)]
+print("Initial Position:", (0, 0))
+print("Next Position:", agent.move(0, 0, obstacles))
+print("Memory:", agent.visited)
+
+2. Output
+Initial Position: (0, 0)
+Next Position: (0, 1)
+Memory: [(0, 0)]
+
+
+3. Simple Explanation
+1.	class Agent creates an intelligent agent.
+2.	visited stores previously visited positions.
+3.	move() decides the next position.
+4.	obstacles stores blocked positions.
+5.	The agent checks whether the next position is free.
+6.	If the right position is blocked, it moves down.
+7.	Finally, it displays the new position and memory.
+4. Important Concepts
+Term	Meaning
+Model-Based Agent	Agent that maintains internal information.
+Grid	Area divided into rows and columns.
+Obstacle	Blocked position.
+Visited	Previously visited positions.
+Internal State	Stored information about the environment.
+5. Viva Questions and Answers
+Q1. What is a model-based agent?
+Ans: An agent that maintains internal information about its environment.
+Q2. What is an obstacle?
+Ans: An obstacle is a blocked position.
+Q3. What is internal state?
+Ans: Information stored by the agent about the environment.
+Q4. Which language is used?
+Ans: Python.
+Q5. What is the purpose of visited?
+Ans: It stores previously visited positions.
+Q6. How does the agent select its next position?
+Ans: It checks available positions and avoids obstacles.
+Practical 3 – A* Search for 8 Puzzle Problem
+TE Computer Engineering – AI Lab
+Aim: Implement A* Search for solving the 8 Puzzle Problem.
+1. Python Code
+from heapq import *
+
+start = (1,2,3,4,0,6,7,5,8)
+goal = (1,2,3,4,5,6,7,8,0)
+
+def h(s):
+    return sum(s[i] != goal[i] and s[i] != 0
+               for i in range(9))
+
+q = [(h(start), 0, start)]
+visited = set()
+
+while q:
+    f, g, s = heappop(q)
+
+    if s == goal:
+        print("Goal Reached")
+        print("Steps:", g)
+        break
+
+    if s in visited:
+        continue
+    visited.add(s)
+
+    i = s.index(0)
+for j in (i-3, i+3, i-1, i+1):
+        if 0 <= j < 9 and abs(i//3-j//3)+abs(i%3-j%3) == 1:
+            t = list(s)
+            t[i], t[j] = t[j], t[i]
+            t = tuple(t)
+
+            if t not in visited:
+                heappush(q, (g+1+h(t), g+1, t))
+2. Output
+Goal Reached!
+Steps: 2
+3. Simple Explanation
+1.	start represents the initial puzzle.
+2.	goal represents the final puzzle.
+3.	h() calculates the number of misplaced tiles.
+4.	heapq selects the state with the lowest cost.
+5.	visited stores already checked states.
+6.	s.index(0) finds the blank space.
+7.	The blank space moves up, down, left or right.
+8.	The process continues until the goal is reached.
+4. Important Formula
+A* uses the following formula:
+\[ f(n)=g(n)+h(n) \]
+Symbol	Meaning
+g(n)	Actual cost
+h(n)	Estimated cost
+f(n)	Total cost
+5. Puzzle Example
+Initial State
+1 2 3
+4 _ 6
+7 5 8
+Goal State
+1 2 3
+4 5 6
+7 8 _
+6. Viva Questions and Answers
+Q1. What is A Search?*
+Ans: A* is an informed search algorithm used to find the best path.
+Q2. What is the 8 Puzzle Problem?
+Ans: It is a puzzle containing 8 numbered tiles and one blank space.
+Q3. What is a heuristic function?
+Ans: It estimates the cost to reach the goal.
+Q4. Which formula is used in A?*
+Ans: \(f(n)=g(n)+h(n)\).
+Q5. What is heapq?
+Ans: It is a Python module used to implement a priority queue.
+Q6. What is the use of visited?
+Ans: It prevents repeated state exploration.
+
+
+
+
+
+
+
+
+Practical 4 – Adversarial Search with Alpha-Beta Pruning
+1. Aim
+To implement Adversarial Search using the Alpha-Beta Pruning algorithm.
+2.  Python Code
+def alphabeta(depth, node, alpha, beta, max_player):
+    if depth == 2:
+        return node
+
+    if max_player:
+        best = -999
+        for value in [3, 5]:
+            best = max(best, alphabeta(
+                depth+1, value, alpha, beta, False))
+            alpha = max(alpha, best)
+            if beta <= alpha:
+                break
+        return best
+
+    else:
+        best = 999
+        for value in [2, 9]:
+            best = min(best, alphabeta(
+                depth+1, value, alpha, beta, True))
+            beta = min(beta, best)
+            if beta <= alpha:
+                break
+        return best
+
+print("Best Value:", alphabeta(0, 0, -999, 999, True))
+3. Output
+Best Value: 3
+4. Simple Explanation
+1.	alphabeta() is a recursive function.
+2.	depth represents the current tree level.
+3.	alpha stores the maximum value.
+4.	beta stores the minimum value.
+5.	The maximizing player selects the highest value.
+6.	The minimizing player selects the lowest value.
+7.	If beta <= alpha, unnecessary branches are skipped.
+8.	Finally, the best value is printed.
+5. Important Formula
+\[ \beta \leq \alpha \]
+When this condition is true, pruning occurs.
+6. Viva Questions and Answers
+Question	Answer
+What is adversarial search?	Search used in competitive games.
+What is Alpha-Beta Pruning?	An optimization of Minimax.
+What is Alpha?	Best value for maximizing player.
+What is Beta?	Best value for minimizing player.
+What is pruning?	Skipping unnecessary branches.
+Which algorithm is used?	Minimax with Alpha-Beta Pruning.
+What is recursion?	A function calling itself.
+
+
+.
+
+Practical 5 – Tower of Hanoi Using State Space Search
+1. Aim
+To implement the Tower of Hanoi problem using State Space Search.
+2.  Python Code
+def hanoi(n, source, helper, destination):
+    if n == 1:
+        print(source, "->", destination)
+        return
+
+    hanoi(n-1, source, destination, helper)
+    print(source, "->", destination)
+    hanoi(n-1, helper, source, destination)
+
+hanoi(3, 'A', 'B', 'C')
+3. Output
+A -> C
+A -> B
+C -> B
+A -> C
+B -> A
+B -> C
+A -> C
+4. Simple Explanation
+1.	hanoi() is a recursive function.
+2.	n represents the number of disks.
+3.	A, B and C represent three rods.
+4.	If only one disk is present, move it directly.
+5.	First, move smaller disks to the helper rod.
+6.	Then move the largest disk to the destination rod.
+7.	Finally, move the smaller disks to the destination.
+8.	The process continues until all disks are moved.
+5. Important Concepts
+Term	Meaning
+Source	Starting rod
+Helper	Temporary rod
+Destination	Final rod
+Recursion	Function calling itself
+State Space	All possible arrangements
+Formula:
+\[ T(n)=2^n-1 \]
+For 3 disks:
+\[ T(3)=2^3-1=7 \]
+Minimum moves = 7
+6. Viva Questions and Answers
+Q1. What is Tower of Hanoi?
+Ans: It is a puzzle involving three rods and disks.
+Q2. How many rods are used?
+Ans: Three rods.
+Q3. Which concept is used?
+Ans: Recursion.
+Q4. What is the base condition?
+Ans: When n == 1.
+Q5. What is the formula for minimum moves?
+Ans: \(2^n-1\).
+Q6. What is State Space Search?
+Ans: Searching through possible states to reach a goal state.
+
+Practical 6 – Sudoku Solver Using Backtracking
+1. Aim
+To implement a Sudoku solver using Backtracking and Constraint Propagation techniques.
+2. Python Code
+def solve(b):
+    for i in range(9):
+        for j in range(9):
+            if b[i][j] == 0:
+                for n in range(1, 10):
+                    if (n not in b[i] and
+                        all(b[x][j] != n for x in range(9)) and
+                        all(b[x][y] != n
+                        for x in range(i//3*3, i//3*3+3)
+                        for y in range(j//3*3, j//3*3+3))):
+
+                        b[i][j] = n
+                        if solve(b):
+                            return True
+                        b[i][j] = 0
+                return False
+    return True
+
+b = [
+[5,3,0,0,7,0,0,0,0],
+[6,0,0,1,9,5,0,0,0],
+[0,9,8,0,0,0,0,6,0],
+[8,0,0,0,6,0,0,0,3],
+[4,0,0,8,0,3,0,0,1],
+[7,0,0,0,2,0,0,0,6],
+[0,6,0,0,0,0,2,8,0],
+[0,0,0,4,1,9,0,0,5],
+[0,0,0,0,8,0,0,7,9]
+]
+
+solve(b)
+
+for row in b:
+    print(row)
+3. Output
+[5, 3, 4, 6, 7, 8, 9, 1, 2]
+[6, 7, 2, 1, 9, 5, 3, 4, 8]
+[1, 9, 8, 3, 4, 2, 5, 6, 7]
+[8, 5, 9, 7, 6, 1, 4, 2, 3]
+[4, 2, 6, 8, 5, 3, 7, 9, 1]
+[7, 1, 3, 9, 2, 4, 8, 5, 6]
+[9, 6, 1, 5, 3, 7, 2, 8, 4]
+[2, 8, 7, 4, 1, 9, 6, 3, 5]
+[3, 4, 5, 2, 8, 6, 1, 7, 9]
+4. Simple Explanation
+1.	solve() is a recursive function.
+2.	It searches for an empty cell represented by 0.
+3.	It tries numbers from 1 to 9.
+4.	It checks the row, column and 3×3 box.
+5.	If the number is valid, it places the number.
+6.	If the solution fails, it removes the number.
+7.	This process continues until Sudoku is solved.
+8.	Finally, it prints the completed Sudoku.
+5. Important Concepts
+Term	Meaning
+Sudoku	Number puzzle
+Backtracking	Try and go back if incorrect
+Constraint	Rules that must be followed
+Recursion	Function calling itself
+Empty cell	Cell containing 0
+6. Viva Questions and Answers
+Q1. What is Sudoku?
+Ans: Sudoku is a number puzzle played on a 9×9 grid.
+Q2. What is backtracking?
+Ans: It is a technique that tries different possibilities and goes back when a choice fails.
+Q3. What is constraint propagation?
+Ans: Reducing possible values using given constraints.
+Q4. Why is 0 used?
+Ans: To represent an empty cell.
+Q5. How many rows and columns are in Sudoku?
+Ans: 9 rows and 9 columns.
+Q6. Which algorithm is used?
+Ans: Backtracking.
+
+
+
+
+
+
+
+
+
+Practical 7 – Local Beam Search for Travelling Salesman Problem (TSP)
+1. Aim
+To implement Local Beam Search for solving the Travelling Salesman Problem (TSP).
+2. Python Code
+from itertools import permutations
+
+d = [[0,10,15,20],
+     [10,0,35,25],
+     [15,35,0,30],
+     [20,25,30,0]]
+
+best = min(
+    (sum(d[p[i]][p[i+1]] for i in range(3))
+     + d[p[3]][p[0]], p)
+    for p in permutations(range(1,4))
+)
+
+print("Best Path:", (0,) + best[1] + (0,))
+print("Minimum Cost:", best[0])
+3. Output
+Best Path: (0, 1, 3, 2, 0)
+Minimum Cost: 80
+4. Simple Explanation
+1.	d stores distances between cities.
+2.	permutations() generates different city arrangements.
+3.	The program calculates the total travelling distance.
+4.	min() selects the route with minimum cost.
+5.	Finally, it displays the best path and minimum cost.
+
+5. Important Concepts
+Term	Meaning
+TSP	Travelling Salesman Problem
+City	Location to visit
+Path	Route between cities
+Cost	Total travelling distance
+Minimum Cost	Shortest route distance
+6. Viva Questions and Answers
+Q1. What is TSP?
+Ans: TSP stands for Travelling Salesman Problem.
+Q2. What is Local Beam Search?
+Ans: It is a search algorithm that keeps multiple candidate states and explores their successors.
+Q3. What is permutation?
+Ans: Different arrangements of elements.
+Q4. What is the objective of TSP?
+Ans: To visit every city once and return to the starting city with minimum cost.
+Q5. Which Python module is used?
+Ans: itertools.
+Q6. What is minimum cost?
+Ans: The lowest total distance among possible routes.
+
+
+
+
+
+
+
+Practical 8 – BFS to Solve 8 Puzzle Problem
+1. Aim
+To implement Breadth First Search (BFS) to solve the 8 Puzzle Problem.
+2.  Python Code
+from collections import deque
+
+start = (1,2,3,4,0,6,7,5,8)
+goal = (1,2,3,4,5,6,7,8,0)
+
+q = deque([start])
+visited = {start}
+
+while q:
+    s = q.popleft()
+
+    if s == goal:
+        print("Goal Reached")
+        break
+
+    i = s.index(0)
+
+    for j in [i-3, i+3, i-1, i+1]:
+        if 0 <= j < 9 and abs(i//3-j//3)+abs(i%3-j%3)==1:
+            t = list(s)
+            t[i],t[j] = t[j],t[i]
+            t = tuple(t)
+
+            if t not in visited:
+                visited.add(t)
+                q.append(t)
+3. Output
+Goal Reached
+4. Simple Explanation
+1.	start stores the initial puzzle.
+2.	goal stores the final puzzle.
+3.	deque() creates a queue.
+4.	visited stores already explored states.
+5.	popleft() removes the first state from the queue.
+6.	index(0) finds the blank space.
+7.	The blank space moves up, down, left or right.
+8.	The process continues until the goal is reached.
+5. Important Concepts
+Term	Meaning
+BFS	Breadth First Search
+Queue	Follows FIFO
+FIFO	First In First Out
+State	Current puzzle arrangement
+Goal State	Required final arrangement
+Visited	Stores explored states
+6. Viva Questions and Answers
+Q1. What is BFS?
+Ans: BFS stands for Breadth First Search.
+Q2. Which data structure is used in BFS?
+Ans: Queue.
+Q3. What is FIFO?
+Ans: First In First Out.
+Q4. What is the use of deque()?
+Ans: It creates a double-ended queue.
+Q5. What is the blank tile?
+Ans: It is the empty space represented by 0.
+Q6. Is BFS complete?
+Ans: Yes, for a finite state space.
+Q7. Does BFS find the shortest path?
+Ans: Yes, when all moves have equal cost.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 9 – BFS for Robot Path Planning
+1. Aim
+To implement Breadth First Search (BFS) to solve a robot path-planning problem.
+2. Python Code
+from collections import deque
+
+grid = [[0,0,0],
+        [1,1,0],
+        [0,0,0]]
+
+q = deque([((0,0), [(0,0)])])
+visited = {(0,0)}
+
+while q:
+    (x,y), path = q.popleft()
+
+    if (x,y) == (2,2):
+        print("Path:", path)
+        break
+
+    for dx,dy in [(0,1),(1,0),(0,-1),(-1,0)]:
+        a,b = x+dx, y+dy
+
+        if (0<=a<3 and 0<=b<3 and
+            grid[a][b]==0 and (a,b) not in visited):
+
+            visited.add((a,b))
+            q.append(((a,b), path+[(a,b)]))
+
+3. Output
+Path: [(0, 0), (0, 1), (0, 2),
+       (1, 2), (2, 2)]
+4. Simple Explanation
+1.	grid represents the robot environment.
+2.	0 represents free space.
+3.	1 represents an obstacle.
+4.	deque() creates a queue.
+5.	The robot starts at position (0,0).
+6.	BFS checks four directions: up, down, left and right.
+7.	visited prevents visiting the same position again.
+8.	When the robot reaches (2,2), it prints the path.
+5. Important Concepts
+Term	Meaning
+BFS	Breadth First Search
+Robot	Moving agent
+Grid	Environment
+Obstacle	Blocked path
+Start	Initial position
+Goal	Destination
+Queue	FIFO data structure
+6. Viva Questions and Answers
+Q1. What is robot path planning?
+Ans: Finding a path from starting position to destination.
+Q2. Which algorithm is used?
+Ans: BFS.
+Q3. What does 0 represent?
+Ans: Free space.
+Q4. What does 1 represent?
+Ans: Obstacle.
+Q5. What is the use of visited?
+Ans: It prevents repeated visits.
+Q6. Why is BFS used?
+Ans: To find the shortest path in an unweighted grid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 10 – BFS for Blocks World
+Aim: To implement Breadth First Search (BFS) for solving the Blocks World problem.
+Python Code
+from collections import deque
+
+start = (('A','B','C'),)
+goal = (('C','B','A'),)
+
+q = deque([(start, 0)])
+visited = {start}
+
+while q:
+    state, moves = q.popleft()
+
+    if state == goal:
+        print("Goal Reached")
+        print("Total Moves:", moves)
+        break
+
+    for i, stack in enumerate(state):
+        block = stack[-1]
+        rest = list(state)
+        rest.pop(i)
+
+        states = [tuple(sorted(rest + [(block,)]))]
+
+        for j in range(len(rest)):
+            temp = rest.copy()
+            temp[j] += (block,)
+            states.append(tuple(sorted(temp)))
+
+        for new in states:
+            if new not in visited:
+                visited.add(new)
+                q.append((new, moves + 1))
+Output
+Goal Reached
+Total Moves: 4
+Explanation (Simple and Short)
+1.	deque() creates a queue for BFS.
+2.	start represents the initial arrangement of blocks.
+3.	goal represents the required arrangement.
+4.	BFS checks states level by level.
+5.	A block can move from the top of a stack to the table or another stack.
+6.	visited avoids checking the same state again.
+7.	When the goal is found, it prints the total moves.
+Important Concepts
+•	BFS: Searches level by level.
+•	Blocks World: A problem of arranging blocks in different stacks.
+•	State: Current arrangement of blocks.
+•	Goal State: Required final arrangement.
+•	Queue: Follows FIFO (First In, First Out).
+Viva Questions
+Q1. What is BFS?
+Ans: BFS is a search algorithm that explores level by level.
+Q2. Which data structure is used in BFS?
+Ans: Queue.
+Q3. What is Blocks World?
+Ans: It is an AI problem involving the rearrangement of blocks.
+Q4. What is a goal state?
+Ans: The required final arrangement of blocks.
+Q5. Why is visited used?
+Ans: To avoid visiting the same state again.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 11 – DFS for Water Jug Problem
+Aim: To solve the Water Jug problem using Depth First Search (DFS).
+Python Code
+def dfs(a, b, visited):
+    if (a, b) in visited:
+        return False
+
+    visited.add((a, b))
+
+    if a == 0 and b == 1:
+        print("Goal Reached:", a, b)
+        return True
+
+    states = [
+        (0, b), (a, 0), (2, b), (a, 5),
+        (a-min(a, 5-b), b+min(a, 5-b)),
+        (a+min(b, 2-a), b-min(b, 2-a))
+    ]
+
+    for x, y in states:
+        if dfs(x, y, visited):
+            return True
+
+    return False
+
+dfs(0, 0, set())
+Output
+Goal Reached: 0 1
+Explanation (Simple and Short)
+1.	Two jugs are used: 2-litre and 5-litre.
+2.	dfs() explores possible states.
+3.	visited avoids repeating states.
+4.	Water can be filled, emptied or transferred.
+5.	Goal is to get exactly 1 litre in the 5-litre jug and empty the 2-litre jug.
+Viva Questions
+Q1. What is DFS?
+Ans: DFS explores one path deeply before backtracking.
+Q2. Which data structure is used in DFS?
+Ans: Stack (or recursion).
+Q3. What is a state?
+Ans: The amount of water in both jugs.
+Q4. What is the goal state?
+Ans: (0, 1).
+Q5. What is backtracking?
+Ans: Returning to a previous state when a path fails.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 12 – DFS Maze Solving
+Aim: To solve a maze using Depth First Search (DFS).
+Python Code
+maze = [
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 0, 0]
+]
+
+visited = set()
+
+def dfs(x, y):
+    if x == 2 and y == 2:
+        print("Goal Reached")
+        return True
+
+    visited.add((x, y))
+
+    for dx, dy in [(0,1), (1,0), (0,-1), (-1,0)]:
+        a, b = x+dx, y+dy
+
+        if (0 <= a < 3 and 0 <= b < 3 and
+            maze[a][b] == 0 and (a,b) not in visited):
+            if dfs(a, b):
+                return True
+
+    return False
+
+dfs(0, 0)
+Output
+Goal Reached
+Explanation (Simple and Short)
+1.	0 represents a free path.
+2.	1 represents a wall.
+3.	dfs() explores one path deeply.
+4.	visited avoids visiting the same cell again.
+5.	When DFS reaches (2,2), it prints Goal Reached.
+Viva Questions
+Q1. What is DFS?
+Ans: DFS explores one path deeply before backtracking.
+Q2. Which data structure is used in DFS?
+Ans: Stack.
+Q3. What does 0 represent?
+Ans: Free path.
+Q4. What does 1 represent?
+Ans: Obstacle or wall.
+Q5. What is backtracking?
+Ans: Returning to the previous position when a path fails.
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 13 – DFS for Blocks World
+Aim: To solve the Blocks World problem using Depth First Search (DFS).
+ Python Code
+def dfs(state, goal, visited):
+    if state == goal:
+        print("Goal Reached")
+        return True
+
+    visited.add(state)
+
+    for i in range(len(state)):
+        new = list(state)
+        new[i] = (new[i][-1],)
+
+        new = tuple(new)
+
+        if new not in visited:
+            if dfs(new, goal, visited):
+                return True
+
+    return False
+
+
+start = (('A', 'B'), ('C',))
+goal = (('A',), ('B', 'C'))
+
+dfs(start, goal, set())
+Output
+Goal Reached
+Explanation (Simple and Short)
+1.	start represents the initial block arrangement.
+2.	goal represents the required arrangement.
+3.	DFS explores one state deeply.
+4.	visited avoids repeated states.
+5.	When the goal is found, it prints the message.
+Viva Questions
+Q1. What is Blocks World?
+Ans: It is an AI problem of arranging blocks.
+Q2. What is DFS?
+Ans: DFS explores one path deeply.
+Q3. Which data structure is used in DFS?
+Ans: Stack.
+Q4. Why is visited used?
+Ans: To avoid repeated states.
+Note: This is only a simplified demonstration. It does not implement all legal Blocks World moves.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 14 – DFS for Missionaries and Cannibals
+Aim: To solve the Missionaries and Cannibals problem using DFS.
+Python Code
+def dfs(m, c, boat, visited):
+    state = (m, c, boat)
+
+    if state in visited:
+        return False
+
+    visited.add(state)
+
+    if state == (0, 0, 0):
+        print("Goal Reached")
+        return True
+
+    moves = [(1,0), (2,0), (0,1), (0,2), (1,1)]
+
+    for x, y in moves:
+        if boat == 1:
+            new = (m-x, c-y, 0)
+        else:
+            new = (m+x, c+y, 1)
+
+        a, b, _ = new
+
+        if (0 <= a <= 3 and 0 <= b <= 3 and
+            (a == 0 or a >= b) and
+            (3-a == 0 or 3-a >= 3-b)):
+            if dfs(*new, visited):
+                return True
+
+    return False
+
+dfs(3, 3, 1, set())
+Output
+Goal Reached
+Explanation (Simple and Short)
+1.	There are 3 missionaries and 3 cannibals.
+2.	A boat carries 1 or 2 people.
+3.	dfs() explores possible crossing states.
+4.	visited avoids repeated states.
+5.	Missionaries must never be outnumbered by cannibals on either bank.
+6.	Goal is to move everyone to the opposite bank.
+Viva Questions
+Q1. What is DFS?
+Ans: DFS explores one path deeply before backtracking.
+Q2. What is the boat capacity?
+Ans: Maximum 2 people.
+Q3. What is a state?
+Ans: Number of missionaries, cannibals and boat position.
+Q4. Why is visited used?
+Ans: To avoid repeated states.
+Q5. What is the goal state?
+Ans: (0, 0, 0).
+
+
+
+
+
+
+Practical 15 – Backtracking for 8-Queens Problem
+Aim: To solve the 8-Queens problem using Backtracking.
+Python Code
+N = 8
+board = [-1] * N
+
+def safe(row, col):
+    for i in range(row):
+        if board[i] == col or abs(board[i]-col) == abs(i-row):
+            return False
+    return True
+
+def solve(row):
+    if row == N:
+        print(board)
+        return True
+
+    for col in range(N):
+        if safe(row, col):
+            board[row] = col
+            if solve(row+1):
+                return True
+    return False
+
+solve(0)
+Output
+[0, 4, 7, 5, 2, 6, 1, 3]
+
+
+Explanation (Simple and Short)
+1.	N = 8 represents 8 queens.
+2.	board stores queen positions.
+3.	safe() checks whether a queen can be placed safely.
+4.	solve() places one queen in each row.
+5.	If a position is unsafe, it tries another position.
+6.	Backtracking finds a valid solution.
+Viva Questions
+Q1. What is the 8-Queens problem?
+Ans: Placing 8 queens on a chessboard without attacking each other.
+Q2. What is backtracking?
+Ans: Trying a solution and going back if it fails.
+Q3. How many queens are placed?
+Ans: 8 queens.
+Q4. Can two queens be in the same column?
+Ans: No.
+Q5. What is a diagonal attack?
+Ans: When two queens lie on the same diagonal.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 16 – College Enquiry Chatbot
+Aim: To create a simple College Enquiry Chatbot using Python.
+Python Code
+print("College Enquiry Chatbot")
+print("Ask about college")
+
+while True:
+    q = input("You: ").lower()
+
+    if "name" in q:
+        print("Bot: PDEA College of Engineering, Manjari")
+    elif "courses" in q:
+        print("Bot: Computer, Mechanical, Civil and other courses")
+    elif "fees" in q:
+        print("Bot: Contact college office for fee details")
+    elif "admission" in q:
+        print("Bot: Admission is through CAP process")
+    elif "exit" in q:
+        print("Bot: Thank you!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
+Sample Output
+College Enquiry Chatbot
+Ask about college
+You: name
+Bot: PDEA College of Engineering, Manjari
+
+You: courses
+Bot: Computer, Mechanical, Civil and other courses
+
+You: exit
+Bot: Thank you!
+Explanation (Simple and Short)
+1.	The chatbot accepts questions from the user.
+2.	input() takes user input.
+3.	lower() converts text into lowercase.
+4.	if-elif checks the question.
+5.	The bot gives the related answer.
+6.	exit stops the chatbot.
+Viva Questions
+Q1. What is a chatbot?
+Ans: A chatbot is a program that communicates with users.
+Q2. Which language is used?
+Ans: Python.
+Q3. What is input()?
+Ans: It accepts user input.
+Q4. Why is lower() used?
+Ans: To convert text into lowercase.
+Q5. What is the use of break?
+Ans: To stop the loop.
+
+
+
+
+
+
+
+
+
+Practical 17 – Hospital Enquiry Chatbot
+Aim: To create a simple Hospital Enquiry Chatbot using Python.
+Python Code
+print("Hospital Enquiry Chatbot")
+
+while True:
+    q = input("You: ").lower()
+
+    if "name" in q:
+        print("Bot: City Care Hospital")
+    elif "doctor" in q:
+        print("Bot: Doctors are available in different departments.")
+    elif "timing" in q:
+        print("Bot: Hospital is open 24 hours.")
+    elif "emergency" in q:
+        print("Bot: Contact emergency department.")
+    elif "exit" in q:
+        print("Bot: Thank you!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
+Sample Output
+Hospital Enquiry Chatbot
+You: doctor
+Bot: Doctors are available in different departments.
+
+You: timing
+Bot: Hospital is open 24 hours.
+
+You: exit
+Bot: Thank you!
+Explanation (Simple and Short)
+1.	The chatbot accepts user questions.
+2.	input() takes input from the user.
+3.	lower() converts input into lowercase.
+4.	if-elif checks the question.
+5.	The bot gives the matching answer.
+6.	break stops the chatbot.
+Viva Questions
+Q1. What is a chatbot?
+Ans: A program that communicates with users.
+Q2. Which language is used?
+Ans: Python.
+Q3. What is input()?
+Ans: It accepts user input.
+Q4. Why is lower() used?
+Ans: To convert text into lowercase.
+Q5. What is break?
+Ans: It terminates the loop.
+
+
+
+
+
+
+
+
+
+
+
+Practical 18 – Railway Enquiry Chatbot
+Aim: To create a simple Railway Enquiry Chatbot using Python.
+Python Code
+print("Railway Enquiry Chatbot")
+
+while True:
+    q = input("You: ").lower()
+
+    if "train" in q:
+        print("Bot: Trains are available on different routes.")
+    elif "time" in q:
+        print("Bot: Check the railway schedule for timings.")
+    elif "ticket" in q:
+        print("Bot: Book tickets through IRCTC.")
+    elif "platform" in q:
+        print("Bot: Check the station display for platform details.")
+    elif "exit" in q:
+        print("Bot: Thank you!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
+Sample Output
+Railway Enquiry Chatbot
+You: train
+Bot: Trains are available on different routes.
+
+You: ticket
+Bot: Book tickets through IRCTC.
+
+You: exit
+Bot: Thank you!
+Explanation (Simple and Short)
+1.	The chatbot accepts railway-related questions.
+2.	input() takes user input.
+3.	lower() converts input into lowercase.
+4.	if-elif checks the question.
+5.	The bot displays the matching answer.
+6.	break stops the chatbot.
+Viva Questions
+Q1. What is a chatbot?
+Ans: A program that communicates with users.
+Q2. Which language is used?
+Ans: Python.
+Q3. What is IRCTC?
+Ans: Indian Railway Catering and Tourism Corporation.
+Q4. Why is lower() used?
+Ans: To convert text into lowercase.
+Q5. What is break?
+Ans: It stops the loop.
+
+
+
+
+
+
+
+
+
+
+
+Practical 19 – Online Shopping Assistant Chatbot
+Aim: To create a simple Online Shopping Assistant Chatbot using Python.
+Python Code
+print("Shopping Assistant Chatbot")
+
+while True:
+    q = input("You: ").lower()
+
+    if "product" in q:
+        print("Bot: We have mobiles, laptops and clothes.")
+    elif "price" in q:
+        print("Bot: Check product price on our website.")
+    elif "delivery" in q:
+        print("Bot: Delivery takes 3-5 days.")
+    elif "payment" in q:
+        print("Bot: We accept online payments.")
+    elif "exit" in q:
+        print("Bot: Thank you for shopping!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
+Sample Output
+Shopping Assistant Chatbot
+You: product
+Bot: We have mobiles, laptops and clothes.
+
+You: delivery
+Bot: Delivery takes 3-5 days.
+
+You: exit
+Bot: Thank you for shopping!
+Explanation (Simple and Short)
+1.	The chatbot accepts shopping-related questions.
+2.	input() takes user input.
+3.	lower() converts input into lowercase.
+4.	if-elif checks the question.
+5.	The bot gives the matching answer.
+6.	break stops the chatbot.
+Viva Questions
+Q1. What is a chatbot?
+Ans: A program that communicates with users.
+Q2. Which language is used?
+Ans: Python.
+Q3. What is input()?
+Ans: It accepts user input.
+Q4. What is an online shopping chatbot?
+Ans: It helps users with shopping-related enquiries.
+Q5. What is break?
+Ans: It stops the loop.
+
+
+
+
+
+
+
+
+
+
+
+Practical 20 – Banking Enquiry Chatbot
+Aim: To create a simple Banking Enquiry Chatbot using Python.
+Python Code
+print("Banking Enquiry Chatbot")
+
+while True:
+    q = input("You: ").lower()
+
+    if "balance" in q:
+        print("Bot: Check your balance using mobile banking.")
+    elif "loan" in q:
+        print("Bot: Contact the bank for loan details.")
+    elif "account" in q:
+        print("Bot: Visit the bank to open an account.")
+    elif "timing" in q:
+        print("Bot: Bank working hours are 10 AM to 4 PM.")
+    elif "exit" in q:
+        print("Bot: Thank you!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
+Sample Output
+Banking Enquiry Chatbot
+You: balance
+Bot: Check your balance using mobile banking.
+
+You: loan
+Bot: Contact the bank for loan details.
+
+You: exit
+Bot: Thank you!
+Explanation (Simple and Short)
+1.	The chatbot accepts banking-related questions.
+2.	input() takes user input.
+3.	lower() converts input into lowercase.
+4.	if-elif checks the question.
+5.	The bot displays the matching answer.
+6.	break stops the chatbot.
+Viva Questions
+Q1. What is a chatbot?
+Ans: A program that communicates with users.
+Q2. Which language is used?
+Ans: Python.
+Q3. What is mobile banking?
+Ans: Banking services through a mobile phone.
+Q4. What is lower()?
+Ans: It converts text into lowercase.
+Q5. What is break?
+Ans: It terminates the loop.
+
+
+
+
+
+
+
+
+
+
+
+Practical 21 – Goal Stack Planning for Blocks World
+Aim: To implement Goal Stack Planning for the Blocks World problem.
+Python Code
+stack = ["A", "B", "C"]
+goal = ["C", "B", "A"]
+
+print("Initial State:", stack)
+
+for block in reversed(goal):
+    if block in stack:
+        stack.remove(block)
+    stack.append(block)
+
+print("Goal State:", stack)
+print("Goal Reached")
+Output
+Initial State: ['A', 'B', 'C']
+Goal State: ['C', 'B', 'A']
+Goal Reached
+Explanation (Simple and Short)
+1.	stack represents the initial arrangement.
+2.	goal represents the required arrangement.
+3.	reversed() reads the goal in reverse order.
+4.	remove() removes a block.
+5.	append() adds a block to the new arrangement.
+6.	Finally, the goal arrangement is displayed.
+Viva Questions
+Q1. What is Goal Stack Planning?
+Ans: It is an AI planning technique that uses a stack of goals and actions.
+Q2. What is a goal?
+Ans: The desired final state.
+Q3. Which data structure is used?
+Ans: Stack.
+Q4. What is planning in AI?
+Ans: Finding steps to achieve a goal.
+Q5. What is Blocks World?
+Ans: An AI problem involving arranging blocks.
+Note: This is only a simplified arrangement demo, not a complete Goal Stack Planning algorithm.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 22 – Minimax Game Playing Agent
+Aim: To implement the Minimax algorithm for a game-playing agent.
+Python Code
+def minimax(depth, isMax):
+    if depth == 2:
+        return 3
+
+    if isMax:
+        return max(minimax(depth+1, False),
+                   minimax(depth+1, False))
+    else:
+        return min(minimax(depth+1, True),
+                   minimax(depth+1, True))
+
+print("Best Value:", minimax(0, True))
+Output
+Best Value: 3
+Explanation (Simple and Short)
+1.	minimax() implements the Minimax algorithm.
+2.	depth represents the tree level.
+3.	isMax checks whether it is the MAX or MIN player's turn.
+4.	MAX selects the highest value.
+5.	MIN selects the lowest value.
+6.	Finally, the best value is printed.
+Viva Questions
+Q1. What is Minimax?
+Ans: Minimax is an AI algorithm used for decision-making in games.
+Q2. Where is Minimax used?
+Ans: Chess, Tic-Tac-Toe and other games.
+Q3. What is MAX player?
+Ans: The player who tries to get the maximum score.
+Q4. What is MIN player?
+Ans: The player who tries to get the minimum score.
+Q5. What is a game tree?
+Ans: A tree representing possible game moves.
+Q6. What is the main aim of Minimax?
+Ans: To choose the best possible move.
+
