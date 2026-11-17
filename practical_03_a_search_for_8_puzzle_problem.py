@@ -1,4 +1,3 @@
-# Practical 3: A* Search for 8 Puzzle Problem
 
 from heapq import *
 
@@ -9,15 +8,22 @@ def h(s):
     return sum(s[i] != goal[i] and s[i] != 0
                for i in range(9))
 
-q = [(h(start), 0, start)]
+q = [(h(start), 0, start, [start])]
 visited = set()
 
 while q:
-    f, g, s = heappop(q)
+    f, g, s, path = heappop(q)
 
     if s == goal:
         print("Goal Reached")
         print("Steps:", g)
+        print("Solution Path:")
+
+        for x in path:
+            print(x[:3])
+            print(x[3:6])
+            print(x[6:])
+            print()
         break
 
     if s in visited:
@@ -25,11 +31,12 @@ while q:
     visited.add(s)
 
     i = s.index(0)
-    for j in (i-3, i+3, i-1, i+1):
-            if 0 <= j < 9 and abs(i//3-j//3)+abs(i%3-j%3) == 1:
-                t = list(s)
-                t[i], t[j] = t[j], t[i]
-                t = tuple(t)
 
-                if t not in visited:
-                    heappush(q, (g+1+h(t), g+1, t))
+    for j in (i-3, i+3, i-1, i+1):
+        if 0 <= j < 9 and abs(i//3-j//3)+abs(i%3-j%3) == 1:
+            t = list(s)
+            t[i], t[j] = t[j], t[i]
+            t = tuple(t)
+
+            if t not in visited:
+                heappush(q, (g+1+h(t), g+1, t, path+[t]))
