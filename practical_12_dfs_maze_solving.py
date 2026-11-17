@@ -1,3 +1,4 @@
+
 # Practical 12: DFS Maze Solving
 
 maze = [
@@ -7,22 +8,55 @@ maze = [
 ]
 
 visited = set()
+path = []
 
 def dfs(x, y):
-    if x == 2 and y == 2:
-        print("Goal Reached")
-        return True
+    # Check boundaries and obstacles
+    if (x < 0 or x >= 3 or y < 0 or y >= 3
+        or maze[x][y] == 1 or (x, y) in visited):
+        return False
 
     visited.add((x, y))
+    path.append((x, y))
 
-    for dx, dy in [(0,1), (1,0), (0,-1), (-1,0)]:
-        a, b = x+dx, y+dy
+    print("Visiting Position:", (x, y))
 
-        if (0 <= a < 3 and 0 <= b < 3 and
-            maze[a][b] == 0 and (a,b) not in visited):
-            if dfs(a, b):
-                return True
+    # Check goal
+    if x == 2 and y == 2:
+        print("\nGoal Reached!")
+        return True
 
+    # Possible movements
+    directions = [
+        (0, 1), (1, 0), (0, -1), (-1, 0)
+    ]
+
+    for dx, dy in directions:
+        a, b = x + dx, y + dy
+
+        print("Checking Position:", (a, b))
+
+        if dfs(a, b):
+            return True
+
+    print("Backtracking from:", (x, y))
+    path.pop()
     return False
 
-dfs(0, 0)
+
+print("Initial Maze:")
+for row in maze:
+    print(row)
+
+print("\nStarting DFS Search...\n")
+
+if dfs(0, 0):
+    print("\nFinal Path:")
+    for i, position in enumerate(path):
+        print("Step", i + 1, ":", position)
+
+    print("\nTotal Steps:", len(path) - 1)
+else:
+    print("No Path Found")
+
+print("\nVisited Positions:", visited)
