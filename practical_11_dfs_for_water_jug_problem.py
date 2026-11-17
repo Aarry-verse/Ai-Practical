@@ -1,13 +1,19 @@
-# Practical 11: DFS for Water Jug Problem
 
-def dfs(a, b, visited):
+def dfs(a, b, visited, path):
     if (a, b) in visited:
         return False
 
     visited.add((a, b))
+    path.append((a, b))
 
     if a == 0 and b == 1:
-        print("Goal Reached:", a, b)
+        print("Goal Reached!")
+        print("\nWater Jug States:")
+
+        for i, state in enumerate(path):
+            print("Step", i, ":", "Jug 1 =", state[0],
+                  "Jug 2 =", state[1])
+
         return True
 
     states = [
@@ -17,9 +23,11 @@ def dfs(a, b, visited):
     ]
 
     for x, y in states:
-        if dfs(x, y, visited):
+        if dfs(x, y, visited, path):
             return True
 
+    path.pop()
     return False
 
-dfs(0, 0, set())
+
+dfs(0, 0, set(), [])
