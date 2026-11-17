@@ -1,6 +1,7 @@
-# Practical 13: DFS for Blocks World
 
 def dfs(state, goal, visited):
+    print("Current State:", state)
+
     if state == goal:
         print("Goal Reached")
         return True
@@ -22,7 +23,10 @@ def dfs(state, goal, visited):
 
         for new in moves:
             new = tuple(sorted(s for s in new if s))
+
             if new not in visited:
+                print("Moving Block:", block)
+
                 if dfs(new, goal, visited):
                     return True
 
@@ -32,4 +36,8 @@ def dfs(state, goal, visited):
 start = (('A', 'B'), ('C',))
 goal = (('A',), ('B', 'C'))
 
-dfs(start, goal, set())
+print("Starting State:", start)
+print("Goal State:", goal)
+
+if not dfs(start, goal, set()):
+    print("Goal Not Found")
